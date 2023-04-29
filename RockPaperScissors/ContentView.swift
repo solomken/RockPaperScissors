@@ -9,10 +9,8 @@ import SwiftUI
 
 
 struct ContentView: View {
-
     static let moves = ["✊", "✌️", "✋"]
     @State private var moveChoice = moves[Int.random(in: 0..<moves.count)]
-    
     @State private var shouldWin = Bool.random()
     @State private var score = 0
     @State private var turnCounter = 1
@@ -69,8 +67,15 @@ struct ContentView: View {
     }
     
     func newTurn(){
-        moveChoice = ContentView.moves[Int.random(in: 0..<ContentView.moves.count)]
-        shouldWin = Bool.random()
+        var newMove = ContentView.moves[Int.random(in: 0..<ContentView.moves.count)]
+        var newShouldWin = Bool.random()
+        
+        if moveChoice == newMove && shouldWin == newShouldWin {
+            newTurn()
+        } else {
+            moveChoice = newMove
+            shouldWin = newShouldWin
+        }
     }
     
     func moveSelected(shouldWin: Bool, appChoice: String, userChoice: String) {
