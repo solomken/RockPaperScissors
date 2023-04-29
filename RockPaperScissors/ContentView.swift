@@ -9,8 +9,9 @@ import SwiftUI
 
 
 struct ContentView: View {
-    @State private var moveChoice = moves[Int.random(in: 0..<moves.count)]
+
     static let moves = ["✊", "✌️", "✋"]
+    @State private var moveChoice = moves[Int.random(in: 0..<moves.count)]
     
     @State private var shouldWin = Bool.random()
     @State private var score = 0
@@ -75,17 +76,17 @@ struct ContentView: View {
     func moveSelected(shouldWin: Bool, appChoice: String, userChoice: String) {
         turnCounter += 1
         
-        if shouldWin == true && appChoice == "✊" && userChoice == "✋" {
+        if shouldWin &&
+            ((appChoice == "✊" && userChoice == "✋") ||
+            (appChoice == "✋" && userChoice == "✌️") ||
+            (appChoice == "✌️" && userChoice == "✊"))
+        {
             score += 1
-        } else if shouldWin == false && appChoice == "✊" && userChoice == "✌️" {
-            score += 1
-        } else if shouldWin == true && appChoice == "✋" && userChoice == "✊" {
-            score += 1
-        } else if shouldWin == false && appChoice == "✋" && userChoice == "✌️" {
-            score += 1
-        }  else if shouldWin == true && appChoice == "✌️" && userChoice == "✋" {
-            score += 1
-        } else if shouldWin == false && appChoice == "✌️" && userChoice == "✊" {
+        } else if shouldWin == false &&
+            ((appChoice == "✊" && userChoice == "✌️") ||
+            (appChoice == "✋" && userChoice == "✊") ||
+            (appChoice == "✌️" && userChoice == "✋"))
+        {
             score += 1
         }
         
