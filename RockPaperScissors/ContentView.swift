@@ -5,15 +5,19 @@
 //  Created by Anastasiia Solomka on 27.04.2023.
 //
 
+//link to task: https://www.hackingwithswift.com/guide/ios-swiftui/2/3/challenge
+
 import SwiftUI
 
 
 struct ContentView: View {
-    static let moves = ["✊", "✌️", "✋"]
-    @State private var moveChoice = moves[Int.random(in: 0..<moves.count)]
+    static let moves = ["✊", "✋", "✌️"]
+    
+    @State private var computerChoice = moves[Int.random(in: 0..<moves.count)]
     @State private var shouldWin = Bool.random()
+    
     @State private var score = 0
-    @State private var turnCounter = 1
+    @State private var questionCount = 1
     @State private var showingResults = false
     
     var body: some View {
@@ -29,19 +33,25 @@ struct ContentView: View {
                 Spacer()
                 
                 Group {
-                    Text("Move: \(moveChoice)")
-                    Text("You should: \(shouldWin ? "👍" : "👎")")
+                    Text("Computer has played...")
+                    Text("\(computerChoice)")
+                        .font(.system(size: 100))
+                    
+                    if shouldWin {
+                        Text("Which one wins?")
+                            .foregroundColor(.green)
+                    } else {
+                        Text("Which one loses?")
+                            .foregroundColor(.red)
+                    }
                 }
                 
-                
-                Spacer()
-                Spacer()
                 Spacer()
                 
                 HStack {
                     ForEach(0..<3) { number in
                         Button("\(ContentView.moves[number])") {
-                            moveSelected(shouldWin: shouldWin, appChoice: moveChoice, userChoice: ContentView.moves[number])
+                            play(shouldWin: shouldWin, appChoice: computerChoice, userChoice: ContentView.moves[number])
                         }
                         .padding()
                         .frame(minWidth: 100)
@@ -67,19 +77,19 @@ struct ContentView: View {
     }
     
     func newTurn(){
-        var newMove = ContentView.moves[Int.random(in: 0..<ContentView.moves.count)]
-        var newShouldWin = Bool.random()
+        let newMove = ContentView.moves[Int.random(in: 0..<ContentView.moves.count)]
+        let newShouldWin = Bool.random()
         
-        if moveChoice == newMove && shouldWin == newShouldWin {
+        if computerChoice == newMove && shouldWin == newShouldWin {
             newTurn()
         } else {
-            moveChoice = newMove
+            computerChoice = newMove
             shouldWin = newShouldWin
         }
     }
     
-    func moveSelected(shouldWin: Bool, appChoice: String, userChoice: String) {
-        turnCounter += 1
+    func play(shouldWin: Bool, appChoice: String, userChoice: String) {
+        questionCount += 1
         
         if shouldWin &&
             ((appChoice == "✊" && userChoice == "✋") ||
@@ -95,22 +105,36 @@ struct ContentView: View {
             score += 1
         }
         
-        if turnCounter == 8 {
+        if questionCount == 8 {
             showingResults = true
         }
         
         newTurn()
     }
     
+   /*
+    Courses version:
+    @State private var computerChoice = Int.random(in: 0..<3)
+    
+    func play2(choice: Int){
+        let winningMoves = [1, 2, 0] //rock can be beaten by paper which has index 2 in moves array. paper loses to scissors which is index 2 and scissors loses to rock - index 0
+        let didWin: Bool
+        
+        if shouldWin {
+            didWin = choice == winningMoves[computerChoice]
+        } else {
+            didWin = winningMoves[choice] == computerChoice
+        }
+    }
+    */
+    
     func newGame(){
         score = 0
-        turnCounter = 1
-        moveChoice = ContentView.moves[Int.random(in: 0..<ContentView.moves.count)]
+        questionCount = 1
+        computerChoice = ContentView.moves[Int.random(in: 0..<ContentView.moves.count)]
         shouldWin = Bool.random()
     }
 }
-
-
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
